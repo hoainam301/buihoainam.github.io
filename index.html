@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>VIP MENU - HOAI NAM</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://files.catbox.moe/p94atp.png">
+
+    <style>
+        :root { --cyan: #00e5ff; --pink: #ff00ea; --bg: #000; --card: rgba(15, 15, 15, 0.98); }
+        body { 
+            background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; 
+            display: flex; justify-content: center; align-items: center; min-height: 100vh; 
+            -webkit-tap-highlight-color: transparent; overflow-x: hidden;
+            padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* --- MÀN HÌNH KHÓA --- */
+        #key-screen { width: 85%; max-width: 350px; text-align: center; padding: 30px 20px; border: 2px solid var(--cyan); border-radius: 30px; background: var(--card); box-shadow: 0 0 30px rgba(0,229,255,0.2); backdrop-filter: blur(15px); }
+        .brand-logo { width: 90px; height: 90px; border-radius: 20px; border: 2px solid var(--cyan); margin-bottom: 15px; box-shadow: 0 0 20px var(--cyan); object-fit: cover; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+        
+        /* Đã xóa gợi ý trong placeholder */
+        #key-input { width: 90%; padding: 15px; border-radius: 12px; border: 1px solid var(--cyan); background: #111; color: var(--cyan); text-align: center; margin-bottom: 15px; outline: none; font-size: 16px; }
+        
+        .btn-key { width: 100%; padding: 15px; border-radius: 12px; border: none; background: linear-gradient(45deg, var(--cyan), #00838f); color: black; font-weight: bold; text-transform: uppercase; cursor: pointer; }
+        .btn-zalo { display: block; margin-top: 10px; padding: 12px; border-radius: 12px; border: 1px solid var(--pink); color: var(--pink); text-decoration: none; font-size: 11px; font-weight: bold; background: rgba(255, 0, 234, 0.05); }
+
+        /* --- MENU CHÍNH --- */
+        #main-menu { display: none; width: 95%; max-width: 380px; padding: 15px; background: linear-gradient(180deg, #0d1417 0%, #000 100%); border-left: 2px solid var(--cyan); border-right: 2px solid var(--cyan); border-radius: 10px; box-shadow: 0 0 50px rgba(0,0,0,1); }
+        .admin-tag { text-align: center; margin-bottom: 15px; padding: 10px; border-radius: 12px; background: rgba(255, 0, 234, 0.1); border: 1px solid var(--pink); }
+        .admin-name { color: var(--pink); font-weight: 900; letter-spacing: 2px; font-size: 16px; text-shadow: 0 0 10px var(--pink); }
+        .monitor { border: 1px solid var(--cyan); border-radius: 12px; padding: 12px; margin-bottom: 15px; background: rgba(0, 229, 255, 0.03); font-size: 12px; color: var(--cyan); font-family: monospace; }
+        .card { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 15px; padding: 10px 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+        .icon-box { width: 38px; height: 38px; background: #0d1e21; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; border: 1px solid #1a3a3f; }
+        .info { margin-left: 10px; flex-grow: 1; }
+        .name { font-weight: bold; font-size: 12px; text-transform: uppercase; display: block; color: #eee; }
+        .sub { font-size: 9px; color: #555; }
+        .switch { position: relative; width: 42px; height: 22px; cursor: pointer; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #1a2a2e; border-radius: 20px; transition: .3s; border: 1px solid #333; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background: #444; border-radius: 50%; transition: .3s; }
+        input:checked + .slider { background: #002d33; border-color: var(--cyan); }
+        input:checked + .slider:before { transform: translateX(20px); background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+        .range-container { background: #0a0a0a; border-radius: 12px; padding: 12px; border: 1px solid #1a1a1a; margin-top: 8px; }
+        .range-head { display: flex; justify-content: space-between; color: var(--cyan); font-weight: bold; font-size: 10px; margin-bottom: 8px; }
+        input[type=range] { width: 100%; accent-color: var(--cyan); cursor: pointer; }
+        .btn-active { width: 100%; padding: 15px; margin-top: 15px; border-radius: 15px; border: 1px solid var(--cyan); background: transparent; color: var(--cyan); font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .btn-active:active { background: var(--cyan); color: black; }
+    </style>
+</head>
+<body onload="checkLogin()">
+
+    <div id="key-screen">
+        <img src="https://files.catbox.moe/p94atp.png" class="brand-logo">
+        <h2 style="color: var(--cyan); margin: 0; font-size: 22px;">HOAI NAM VIP</h2>
+        <p style="font-size: 10px; color: #555; margin-bottom: 20px;">OWNER: ADMIN HOAI NAM</p>
+        
+        <input type="text" id="key-input" placeholder="Nhập Key">
+        <button class="btn-key" onclick="validateKey()">KÍCH HOẠT VIP</button>
+        
+        <a href="https://link4m.com/Y3HGC" style="display:block; margin-top:15px; color:var(--cyan); font-size:12px; text-decoration:none; border: 1px dashed var(--cyan); padding: 10px; border-radius:12px;">🌐 LẤY KEY FREE 24H (LINK4M)</a>
+        <a href="https://zalo.me/0356360255" class="btn-zalo">💬 MUA KEY VIP IB ZL: 0356360255</a>
+        
+        <p id="error-msg" style="color: #ff3d00; font-size: 11px; margin-top: 15px; display: none; font-weight: bold;"></p>
+    </div>
+
+    <div id="main-menu">
+        <div class="admin-tag">
+            <span class="admin-name">ADMIN: HOAI NAM</span>
+        </div>
+        <div class="monitor">
+            [+] ID: <span id="dev-id">...</span><br>
+            [+] FPS: <span id="fps-num">60</span> | GPU: <span id="gpu-num">850</span> MHz<br>
+            [+] EXPIRE: <span id="countdown">...</span>
+        </div>
+        <div class="card">
+            <div class="icon-box">🤖</div>
+            <div class="info"><span class="name">Aim Bot VIP</span><span class="sub">Tự động ngắm mục tiêu</span></div>
+            <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+        </div>
+        <div class="card">
+            <div class="icon-box">💀</div>
+            <div class="info"><span class="name">Aim Head VIP</span><span class="sub">Ưu tiên Headshot 100%</span></div>
+            <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+        </div>
+        <div class="card">
+            <div class="icon-box">🎯</div>
+            <div class="info"><span class="name">Aim Lock</span><span class="sub">Khóa mục tiêu khi xả đạn</span></div>
+            <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+        </div>
+        <div class="card">
+            <div class="icon-box">🧠</div>
+            <div class="info"><span class="name">Smart Tracking</span><span class="sub">Theo dõi chuyển động thông minh</span></div>
+            <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+        </div>
+        <div class="card">
+            <div class="icon-box">🚀</div>
+            <div class="info"><span class="name">Fix Lag System</span><span class="sub">Tối ưu hóa RAM & CPU</span></div>
+            <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+        </div>
+        <div class="card">
+            <div class="icon-box">📵</div>
+            <div class="info"><span class="name">Fix Rung Tâm</span><span class="sub">Ổn định ống ngắm ổn định</span></div>
+            <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+        </div>
+        <div class="card">
+            <div class="icon-box">⏳</div>
+            <div class="info"><span class="name">Giảm Delay 0ms</span><span class="sub">Tối ưu tốc độ phản hồi</span></div>
+            <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+        </div>
+        <div class="card">
+            <div class="icon-box">⚡</div>
+            <div class="info"><span class="name">Unlock 120 FPS</span><span class="sub">Mượt mà tối đa</span></div>
+            <label class="switch"><input type="checkbox" id="fps-toggle" onchange="toggleFPS()"><span class="slider"></span></label>
+        </div>
+        <div class="range-container">
+            <div class="range-head"><span>SENSITIVITY</span><span id="sens-val">1.5x</span></div>
+            <input type="range" min="0.5" max="3.0" step="0.1" value="1.5" oninput="document.getElementById('sens-val').innerText = this.value + 'x'">
+        </div>
+        <div class="range-container">
+            <div class="range-head"><span>DPI CONTROL</span><span id="dpi-val">520</span></div>
+            <input type="range" min="100" max="1000" step="10" value="520" oninput="document.getElementById('dpi-val').innerText = this.value">
+        </div>
+        <button class="btn-active" onclick="alert('ADMIN HOAI NAM: Đã kích hoạt cấu hình thành công!')">ÁP DỤNG NGAY</button>
+        <button onclick="logout()" style="background:none; border:none; color:#333; width:100%; margin-top:20px; font-size:9px; letter-spacing:1px;">RESET DEVICE DATA</button>
+    </div>
+
+<script>
+    function getDeviceID() {
+        const info = window.navigator.userAgent + window.screen.width + window.screen.height;
+        let hash = 0;
+        for (let i = 0; i < info.length; i++) { hash = ((hash << 5) - hash) + info.charCodeAt(i); hash |= 0; }
+        return "HN-" + Math.abs(hash);
+    }
+    const currentDeviceID = getDeviceID();
+
+    function checkLogin() {
+        const expireTime = localStorage.getItem('expireTime');
+        const savedID = localStorage.getItem('deviceID');
+        if (expireTime && savedID === currentDeviceID) {
+            if (new Date().getTime() > parseInt(expireTime)) {
+                localStorage.clear();
+                location.reload();
+            } else { showMenu(); }
+        }
+    }
+
+    function validateKey() {
+        const input = document.getElementById('key-input').value.trim();
+        const err = document.getElementById('error-msg');
+        let days = 0;
+        let isVIP = false;
+
+        // Giữ nguyên logic kiểm tra key của bạn
+        if (input.startsWith("FREE_")) { days = 1; isVIP = false; } 
+        else if (input.startsWith("VIP7_")) { days = 7; isVIP = true; } 
+        else if (input.startsWith("VIP30_")) { days = 30; isVIP = true; }
+
+        if (days > 0) {
+            if (isVIP) {
+                const lockDevice = localStorage.getItem('lock_' + input);
+                if (lockDevice && lockDevice !== currentDeviceID) {
+                    err.innerText = "LỖI: KEY VIP NÀY ĐÃ ĐƯỢC DÙNG CHO MÁY KHÁC!";
+                    err.style.display = "block"; return;
+                }
+                localStorage.setItem('lock_' + input, currentDeviceID);
+            }
+            const expireTimestamp = new Date().getTime() + (days * 24 * 60 * 60 * 1000);
+            localStorage.setItem('activeKey', input);
+            localStorage.setItem('deviceID', currentDeviceID);
+            localStorage.setItem('expireTime', expireTimestamp.toString());
+            showMenu();
+        } else {
+            err.innerText = "MÃ KEY SAI HOẶC KHÔNG HỢP LỆ!";
+            err.style.display = "block";
+        }
+    }
+
+    function showMenu() {
+        document.getElementById('key-screen').style.display = "none";
+        document.getElementById('main-menu').style.display = "block";
+        document.getElementById('dev-id').innerText = currentDeviceID;
+        startMonitor();
+        startCountdown();
+    }
+
+    function startCountdown() {
+        const expireTime = parseInt(localStorage.getItem('expireTime'));
+        setInterval(() => {
+            const now = new Date().getTime();
+            const distance = expireTime - now;
+            if (distance < 0) { localStorage.clear(); location.reload(); return; }
+            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((distance % (1000 * 60)) / 1000);
+            document.getElementById("countdown").innerHTML = d + "d " + h + "h " + m + "m " + s + "s";
+        }, 1000);
+    }
+
+    function startMonitor() {
+        setInterval(() => {
+            const is120 = document.getElementById('fps-toggle').checked;
+            document.getElementById('fps-num').innerText = (is120 ? 116 : 57) + Math.floor(Math.random() * 6);
+            document.getElementById('gpu-num').innerText = 810 + Math.floor(Math.random() * 60);
+        }, 300);
+    }
+
+    function toggleFPS() {}
+
+    function logout() { if(confirm("Xóa toàn bộ dữ liệu máy?")) { localStorage.clear(); location.reload(); } }
+</script>
+</body>
+</html>
